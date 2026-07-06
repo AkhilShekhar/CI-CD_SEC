@@ -1,0 +1,25 @@
+name: SecScan
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run SecScan
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          base-ref: origin/${{ github.base_ref }}
+          diff-only: "true"

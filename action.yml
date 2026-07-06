@@ -1,0 +1,28 @@
+name: "SecScan"
+description: "Custom security scanner: hardcoded secrets, JWT issues, vulnerable deps, insecure CORS. Posts findings as a PR comment."
+branding:
+  icon: "shield"
+  color: "red"
+
+inputs:
+  github-token:
+    description: "Token used to post the PR comment (usually secrets.GITHUB_TOKEN)"
+    required: true
+  base-ref:
+    description: "Base ref to diff against for changed-files scanning"
+    required: false
+    default: "origin/main"
+  diff-only:
+    description: "Only scan files changed in the PR (true) or scan whole repo (false)"
+    required: false
+    default: "true"
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  env:
+    GITHUB_TOKEN: ${{ inputs.github-token }}
+    BASE_REF: ${{ inputs.base-ref }}
+    DIFF_ONLY: ${{ inputs.diff-only }}
+    SCAN_ROOT: "/github/workspace"
+    OUTPUT_DIR: "/github/workspace/.secscan-output"
